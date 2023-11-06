@@ -1,0 +1,84 @@
+Flowchart ---> https://zupimages.net/viewer.php?id=23/45/ec03.jpeg
+
+-----------------------------------------------------------------------------------
+
+To design a one-server web infrastructure that hosts the website reachable via www.foobar.com, let's break down the components and their roles as per your requirements:
+
+1. Server:
+
+A server is a computer or system that hosts and serves the website. It runs various software components required for web hosting, such as the web server, application server, and database server.
+In this case, you have one server that will handle all the web hosting tasks.
+
+2. Domain Name (foobar.com):
+
+A domain name, like foobar.com, is a human-readable address that is used to access websites on the internet.
+The domain name serves as a user-friendly identifier that maps to the server's IP address (8.8.8.8 in this example) through the Domain Name System (DNS).
+
+3. DNS Record (www):
+
+The "www" in www.foobar.com is a subdomain.
+The "www" subdomain typically points to the same IP address as the main domain (foobar.com) and is used to access the website.
+It's a common practice to configure a "CNAME" DNS record for the "www" subdomain to point to the domain itself (e.g., CNAME record for "www" => "foobar.com").
+
+4. Web Server (Nginx):
+
+The web server (e.g., Nginx) is responsible for receiving HTTP requests from users' browsers and serving web content in response.
+It handles tasks like processing static files (HTML, CSS, images) and can also act as a reverse proxy to route requests to the application server.
+
+5. Application Server:
+
+The application server is where your code base runs.
+It processes dynamic content, interacts with the database, and generates responses for user requests.
+Common application servers include Apache, Node.js, or any other platform capable of executing your web application code.
+
+6. Application Files (Your Code Base):
+
+This includes your website's source code, such as PHP, Python, Ruby, or any other language-specific files and scripts.
+The application server executes these files to generate dynamic content.
+
+7. Database (MySQL):
+
+The database stores and manages data for your website.
+MySQL, as mentioned, is a relational database management system (RDBMS) that can be used to store structured data.
+It's used by the application server to read and write data for the website.
+Communication with User's Computer:
+
+When a user wants to access your website (e.g., www.foobar.com), they type the URL into their web browser.
+The DNS system resolves the domain name to the server's IP address (8.8.8.8).
+The user's browser sends an HTTP request to the server at that IP address.
+The web server (Nginx) processes the request, and if it's a dynamic request, forwards it to the application server.
+The application server executes your code base and interacts with the database as needed to generate a response.
+The response is sent back through the web server to the user's browser, which then renders the webpage.
+Issues with this Infrastructure:
+
+Single Point of Failure (SPOF): This infrastructure has a single server, which means that if the server experiences hardware failure or other issues, the entire website will be unavailable.
+Downtime during Maintenance: When deploying new code or making updates, the web server may need to be restarted. This can result in temporary downtime, affecting user access.
+Limited Scalability: This infrastructure is not easily scalable to handle increased traffic. If traffic spikes, it may not perform well, and you may need to upgrade to a more complex, distributed architecture to accommodate growth.
+
+To address these issues, you can consider implementing load balancing, redundancy, and horizontal scaling, which would involve multiple servers and other advanced infrastructure configurations to improve fault tolerance and scalability.
+
+Flowchart
+I can describe the steps in a flowchart-like format. You can create the flowchart using a drawing tool or software that supports flowchart diagrams. Here's a textual representation of the steps:
+
+Start
+User wants to access website (www.foobar.com)
+DNS Resolution: Check if "www.foobar.com" points to "8.8.8.8" (IP address of the server)
+Web Server (Nginx) Receives Request: Listen for incoming HTTP requests on port 80
+Web Server Processes Request:
+Check if it's a static file request (HTML, CSS, images)
+If static, serve the file directly
+If dynamic, forward the request to the Application Server
+Application Server Executes Code:
+Processes dynamic content based on user request
+May interact with the Database (MySQL)
+Database Query (if needed):
+Application Server sends queries to the Database
+Database Processes Query:
+Reads/writes data and sends the result back to the Application Server
+Application Server Sends Response:
+Generates the dynamic response
+Web Server Sends Response to User:
+Sends the final response to the user's computer
+User Computer Displays Webpage
+End
+You can create a visual flowchart representation of these steps using a flowchart drawing tool or software, following the sequence described above.

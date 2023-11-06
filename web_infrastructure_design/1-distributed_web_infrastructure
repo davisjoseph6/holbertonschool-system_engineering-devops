@@ -1,0 +1,118 @@
+Flowchart ---> https://zupimages.net/viewer.php?id=23/45/687e.jpeg
+
+---------------------------------------------------------------------------------
+
+Designing a three-server web infrastructure for www.foobar.com with HAproxy as a load balancer, Nginx as the web server, and MySQL for the database involves adding redundancy, load balancing, and separating critical components. Let's break it down step by step:
+
+Server 1 (Web Server - Nginx):
+
+Nginx is a high-performance web server that serves as the front-end for processing HTTP requests.
+It handles static content, SSL termination, and load balancing configuration.
+Server 2 (Application Server):
+
+This server is dedicated to running your application code.
+It processes dynamic content and communicates with the database.
+Server 3 (Database Server - MySQL):
+
+MySQL is used as the database server to store and manage website data.
+HAproxy Load Balancer:
+
+HAproxy serves as a load balancer to distribute incoming web traffic across multiple servers.
+Distribution Algorithm: Use a Round Robin algorithm to evenly distribute requests among the two application servers. This is a simple method where each request is directed to the next server in the list.
+
+Set of Application Files (Your Code Base):
+
+These are the files containing your website's source code, responsible for generating dynamic content.
+
+Explanations:
+
+Additional Servers:
+Adding more servers provides redundancy and fault tolerance, reducing the risk of a single point of failure (SPOF).
+Separating the web server, application server, and database server allows for better resource allocation and scalability.
+HAproxy Load Balancer:
+The load balancer evenly distributes incoming traffic to the application servers to optimize performance and prevent overloading any single server.
+Database Primary-Replica (Master-Slave) Cluster:
+This architecture improves database availability and data integrity by having a primary node (master) for read and write operations and one or more replica nodes (slaves) for read-only operations.
+The primary node handles write operations, while replica nodes replicate the data and handle read operations.
+Difference Between Primary and Replica:
+The primary node (master) is responsible for handling write operations and maintaining data consistency.
+Replica nodes (slaves) mirror the data from the primary node and handle read operations. They are read-only and can be used to scale read-heavy workloads.
+Issues with this Infrastructure:
+
+SPOF:
+The load balancer itself can become a single point of failure. Consider adding redundancy to the load balancer with a failover mechanism or using a cloud-based load balancer service.
+Without a firewall, the infrastructure is vulnerable to security threats. Implement a firewall to protect against unauthorized access.
+HTTPS is essential for secure data transmission. Without it, sensitive data is at risk during transmission. Implement SSL/TLS for HTTPS support.
+Monitoring is crucial for identifying and addressing issues promptly. The lack of monitoring makes it challenging to detect and respond to problems effectively. Consider implementing monitoring tools to ensure the health and performance of the infrastructure.
+Flowchart
+
+Start
+|
+|--- User wants to access website (www.foobar.com)
+|
+|--- DNS Resolution:
+|      |
+|      |--- Check if "www.foobar.com" points to the Load Balancer's IP
+|
+|--- Load Balancer (HAproxy) Distributes Request:
+|      |
+|      |--- Round Robin Algorithm:
+|      |      |
+|      |      |--- Send request to Nginx Web Server
+|
+|--- Nginx Web Server Handles Static Content:
+|      |
+|      |--- Static Files (HTML, CSS, Images):
+|      |      |
+|      |      |--- Serve static content
+|
+|--- Nginx Web Server Routes Dynamic Requests to Application Servers:
+|      |
+|      |--- Send dynamic requests to one of the Application Servers
+|
+|--- Application Server 1 Processes Request:
+|      |
+|      |--- Application Files (Your Code Base):
+|      |      |
+|      |      |--- Execute code to generate dynamic content
+|      |
+|      |--- Database Query (if needed):
+|      |      |
+|      |      |--- Connect to Database Server (Primary)
+|      |      |--- Execute query
+|      |      |--- Retrieve data
+|
+|--- Application Server 2 (Redundant) Processes Request:
+|      |
+|      |--- Application Files (Your Code Base):
+|      |      |
+|      |      |--- Execute code to generate dynamic content
+|      |
+|      |--- Database Query (if needed):
+|      |      |
+|      |      |--- Connect to Database Server (Primary)
+|      |      |--- Execute query
+|      |      |--- Retrieve data
+|
+|--- Database Server (Primary) Handles Write Operations:
+|      |
+|      |--- Database Files:
+|      |      |
+|      |      |--- Store and manage website data
+|
+|--- Database Server (Replica) Handles Read Operations:
+|      |
+|      |--- Database Files (Replicated):
+|      |      |
+|      |      |--- Replicate data from the Primary
+|      |      |--- Serve read-only queries
+|
+|--- Application Server Sends Response to Nginx Web Server
+|
+|--- Nginx Web Server Sends Response to Load Balancer
+|
+|--- Load Balancer Sends Response to User
+|
+|--- User Computer Displays Webpage
+|
+End

@@ -1,0 +1,207 @@
+Flowchart -----> https://zupimages.net/viewer.php?id=23/45/v9hm.jpeg
+
+-------------------------------------------------------------------------------
+
+To design a three-server web infrastructure that hosts www.foobar.com with security, encrypted traffic (HTTPS), and monitoring, let's address each component and explain their roles, followed by discussing potential issues:
+
+Components:
+
+Server 1 (Web Server - Nginx):
+Nginx acts as the web server responsible for processing HTTP requests and serving static content.
+It terminates SSL connections and routes traffic to application servers.
+Server 2 (Application Server):
+This server runs the application code and processes dynamic content.
+It communicates with the database server and is isolated from external requests.
+Server 3 (Database Server - MySQL):
+MySQL stores and manages the website's data.
+This server is critical for data integrity and redundancy.
+Firewalls (3):
+Firewalls are added for security purposes, protecting the infrastructure from unauthorized access and attacks.
+Each firewall can be configured to control traffic between servers, limiting potential security threats.
+SSL Certificate (for HTTPS):
+SSL certificates are used to secure communication between the user's browser and the web server.
+HTTPS encrypts data in transit, enhancing security and protecting sensitive information.
+Monitoring Clients (e.g., Sumo Logic) - 3 Data Collectors:
+Monitoring tools are crucial for observing the health, performance, and security of the infrastructure.
+Data collectors gather metrics, logs, and other information to provide insights into the system's behavior.
+Explanations:
+
+Firewalls:
+Firewalls are added to restrict access to the servers and control the flow of network traffic.
+They help prevent unauthorized access and protect the infrastructure from various security threats.
+HTTPS:
+Serving traffic over HTTPS is essential for securing data transmission between users and the website.
+It prevents eavesdropping and ensures data integrity.
+Monitoring:
+Monitoring is used to keep track of server performance, detect issues, and respond to incidents promptly.
+Data collectors gather data from various components and provide insights into the system's behavior.
+Data Collection by Monitoring Tools:
+Monitoring tools collect data by accessing server logs, performance metrics, and other relevant information.
+Data collectors may use agents or APIs to retrieve data from servers, and this information is then analyzed and visualized by the monitoring service.
+Monitoring Web Server QPS (Queries per Second):
+To monitor web server QPS, you can configure monitoring tools to collect and analyze server request logs, tracking the number of incoming queries over time.
+Alerts can be set up to notify administrators if QPS exceeds defined thresholds.
+Issues with this Infrastructure:
+
+Terminating SSL at the Load Balancer Level:
+Terminating SSL at the load balancer can be a security concern as decrypted traffic flows internally. It's essential to ensure secure communication between the load balancer and other components.
+Having Only One MySQL Server Capable of Accepting Writes:
+This is a single point of failure (SPOF). If the MySQL server goes down, the website may experience data unavailability.
+Implementing a high-availability setup with at least one MySQL replica for failover is recommended.
+Having Servers with All the Same Components:
+While redundancy is valuable, having identical components on all servers may lead to inefficiencies in resource utilization.
+Consider segregating the roles to optimize resource allocation (e.g., one server exclusively for the web server, one for the application server, and one for the database server).
+Certainly, I'll explain where Firewalls 2 and 3 will be present in the infrastructure:
+
+Firewall 1:
+
+Firewall 1 is placed between the Load Balancer (HAproxy) and the Nginx Web Server.
+It controls and filters network traffic entering the infrastructure, providing security and protecting against unauthorized access. This firewall acts as the initial barrier.
+Firewall 2:
+
+Firewall 2 is placed between the Nginx Web Server and the Application Servers (Application Server 1 and Application Server 2).
+It controls and filters network traffic that flows from the web server to the application servers, adding an extra layer of protection and access control at this stage of communication.
+Firewall 3:
+
+Firewall 3 is placed between the Application Servers (Application Server 1 and Application Server 2) and the Database Servers (Database Server Primary and Database Server Replica).
+It controls and filters network traffic between the application servers and the database servers. This firewall enhances security by managing access to the database servers.
+Each firewall serves as a security checkpoint within the infrastructure, allowing or denying specific types of traffic and ensuring that only authorized communication occurs between the different components of the system. Firewalls help protect against security threats and unauthorized access at multiple points in the data flow.
+
+SSL termination, SSL certificate handling, and the encryption/decryption of traffic occur primarily at the Nginx Web Server level. Here's how this process fits into the flow:
+
+Nginx Web Server Handles SSL Termination:
+
+SSL termination takes place at the Nginx Web Server.
+SSL termination is the process of terminating the SSL (Secure Socket Layer) or TLS (Transport Layer Security) encryption on the server side. It means that incoming encrypted HTTPS traffic is decrypted at the Nginx server before further processing.
+Nginx handles this decryption and forwards the traffic as plain HTTP to the application servers.
+SSL Certificate:
+
+The SSL certificate is installed and configured on the Nginx Web Server.
+This certificate is used to secure the communication between the user's browser and the Nginx server.
+It contains the public key for encryption and decryption.
+Encrypt/Decrypt Traffic:
+
+When a user accesses the website using HTTPS (e.g., https://www.foobar.com), the communication is encrypted between the user's browser and the Nginx Web Server.
+Nginx, with the SSL certificate, decrypts the traffic, making it accessible for processing.
+After processing, the Nginx server encrypts the response before sending it back to the user's browser.
+In summary, the Nginx Web Server acts as the SSL termination point in the infrastructure, handling the encryption/decryption of traffic. This ensures secure communication between the user's browser and the web server while allowing the internal components to work with unencrypted traffic for processing.
+
+Monitoring Clients (data collectors) are typically placed on the servers or infrastructure components you want to monitor. Here's a suggestion for where to place Monitoring Clients 1, 2, and 3:
+
+Monitoring Client 1:
+
+Place Monitoring Client 1 on one of the Application Servers (e.g., Application Server 1).
+This client collects metrics and logs specific to the application server, providing insights into its performance and behavior.
+Monitoring Client 2:
+
+Place Monitoring Client 2 on one of the Database Servers (e.g., Database Server Primary).
+This client focuses on monitoring the database server's performance and the state of the database system.
+Monitoring Client 3:
+
+Place Monitoring Client 3 on one of the remaining servers in the infrastructure. It could be placed on the Nginx Web Server or another Application Server.
+This client can provide additional monitoring coverage for the web server or another component as needed.
+Keep in mind that the specific placement of monitoring clients can vary based on your monitoring requirements and what aspects of the infrastructure you want to monitor more closely. You can also deploy multiple monitoring clients on each server to capture different types of data or metrics. Additionally, using a central monitoring solution or service can consolidate and analyze data collected from all these monitoring clients for comprehensive insights into your entire infrastructure's health and performance.
+
+Start
+|
+|--- User wants to access website (www.foobar.com)
+|
+|--- DNS Resolution:
+|      |
+|      |--- Check if "www.foobar.com" points to the Load Balancer's IP
+|
+|--- Load Balancer (HAproxy) Distributes Request:
+|      |
+|      |--- Round Robin Algorithm:
+|      |      |
+|      |      |--- Send request to Nginx Web Server
+|
+|--- Firewall 1:
+|      |
+|      |--- Control and filter network traffic
+|      |--- Protect against unauthorized access
+|
+|--- Nginx Web Server Handles SSL Termination:
+|      |
+|      |--- SSL Certificate:
+|      |      |
+|      |      |--- Encrypt/Decrypt traffic
+|      |
+|      |--- Static Files (HTML, CSS, Images):
+|      |      |
+|      |      |--- Serve static content over HTTPS
+|
+|--- Nginx Web Server Routes Dynamic Requests to Application Servers:
+|      |
+|      |--- Send dynamic requests to one of the Application Servers
+|
+|--- Application Server 1 Processes Request:
+|      |
+|      |--- Application Files (Your Code Base):
+|      |      |
+|      |      |--- Execute code to generate dynamic content
+|      |
+|      |--- Database Query (if needed):
+|      |      |
+|      |      |--- Connect to Database Server (Primary)
+|      |      |--- Execute query
+|      |      |--- Retrieve data
+|
+|--- Application Server 2 (Redundant) Processes Request:
+|      |
+|      |--- Application Files (Your Code Base):
+|      |      |
+|      |      |--- Execute code to generate dynamic content
+|      |
+|      |--- Database Query (if needed):
+|      |      |
+|      |      |--- Connect to Database Server (Primary)
+|      |      |--- Execute query
+|      |      |--- Retrieve data
+|
+|--- Database Server (Primary) Handles Write Operations:
+|      |
+|      |--- Database Files:
+|      |      |
+|      |      |--- Store and manage website data
+|
+|--- Database Server (Replica) Handles Read Operations:
+|      |
+|      |--- Database Files (Replicated):
+|      |      |
+|      |      |--- Replicate data from the Primary
+|      |      |--- Serve read-only queries
+|
+|--- Firewall 2:
+|      |
+|      |--- Control and filter network traffic
+|      |--- Protect against unauthorized access
+|
+|--- Firewall 3:
+|      |
+|      |--- Control and filter network traffic
+|      |--- Protect against unauthorized access
+|
+|--- Security Component (Firewall):
+|      |
+|      |--- Control and filter network traffic
+|      |--- Protect against unauthorized access
+|
+|--- Monitoring Client 1 (Data Collector for Sumo Logic):
+|      |
+|      |--- Collect system metrics and logs
+|      |--- Provide insights and alerts for monitoring
+|
+|--- Monitoring Client 2 (Data Collector for Sumo Logic):
+|      |
+|      |--- Collect system metrics and logs
+|      |--- Provide insights and alerts for monitoring
+|
+|--- Monitoring Client 3 (Data Collector for Sumo Logic):
+|      |
+|      |--- Collect system metrics and logs
+|      |--- Provide insights and alerts for monitoring
+|
+|--- User Computer Receives Encrypted Webpage (HTTPS)
+|
+End
